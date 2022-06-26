@@ -23,7 +23,10 @@ const ArticleSchema = {
 // Database models goes here
 const Article = mongoose.model('Article',ArticleSchema);
 
-app.get("/articles",function(request,response){
+
+//chained route
+app.route("/articles")
+.get(function(request,response){
     Article.find(function(err,foundArticles){
         if(!err){
             response.send(foundArticles)
@@ -32,9 +35,8 @@ app.get("/articles",function(request,response){
             response.send(err)
         }
     });
-});
-
-app.post("/articles",function(req,res){
+})
+.post(function(req,res){
     console.log(req.body.title);
     console.log(req.body.content);
 
@@ -50,8 +52,40 @@ app.post("/articles",function(req,res){
             res.send(err)
         }
     })
+})
+.delete(function(req, res){
+    Article.deleteMany(function(err){
+        if(!err){
+            res.send("All articles deleted successfully");
+        }else{
+            res.send(err)
+        }
+    })
 });
 
+
+/////////////////////////////////// REQUEST TARGETING A SPECIFIC ARTICLE /////////////////////////////////
+
+app.route("/articles/:articleTitle")
+.get(function(req, res){
+    let title = req.params.articleTitle
+    Article.findOne({title: title},function(err, foundArticle){
+        if (foundArticle){
+            res.send(foundArticle)
+        }else{
+            let noArticle = "There is no article found with title: "+title;
+            res.send(noArticle)
+        }
+    });
+});
+
+/*
+app.get("/articles",);
+
+app.post("/articles",);
+
+app.delete("/articles",)
+*/
 app.listen(3000,function(){
     console.log("Server started on port 3000")
 })
