@@ -24,6 +24,8 @@ const ArticleSchema = {
 const Article = mongoose.model('Article',ArticleSchema);
 
 
+/////////////////////// Request Targeting All the Articles //////////////////////////
+
 //chained route
 app.route("/articles")
 .get(function(request,response){
