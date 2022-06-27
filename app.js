@@ -39,9 +39,6 @@ app.route("/articles")
     });
 })
 .post(function(req,res){
-    console.log(req.body.title);
-    console.log(req.body.content);
-
     const newArticle = new Article({
         title: req.body.title,
         content: req.body.content
@@ -79,6 +76,21 @@ app.route("/articles/:articleTitle")
             res.send(noArticle)
         }
     });
+})
+.put(function(req, res){
+    let title = req.params.articleTitle
+
+    Article.updateOne(
+        {title:title},
+        {$set:{title: req.body.title, content: req.body.content}},
+        function(err){
+            if(!err){
+                res.send("Successfully updated article")
+            }else{
+                res.send(err)
+            }
+        }
+    );
 });
 
 /*
