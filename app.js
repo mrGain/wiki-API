@@ -79,10 +79,30 @@ app.route("/articles/:articleTitle")
 })
 .put(function(req, res){
     let title = req.params.articleTitle
-
+    let ntitle = req.body.title;
+    let ncontent = req.body.content;
+    if (ntitle && ncontent){
+        Article.updateOne(
+            {title:title},
+            {$set:{title: req.body.title, content: req.body.content}},
+            function(err){
+                if(!err){
+                    res.send("Successfully updated article")
+                }else{
+                    res.send(err)
+                }
+            }
+        );
+    }else{
+        res.send("Please provide both title and content")
+    }
+    
+})
+.patch(function(req,res){
+    let title = req.params.articleTitle;
     Article.updateOne(
         {title:title},
-        {$set:{title: req.body.title, content: req.body.content}},
+        {$set:req.body},
         function(err){
             if(!err){
                 res.send("Successfully updated article")
@@ -91,6 +111,19 @@ app.route("/articles/:articleTitle")
             }
         }
     );
+})
+.delete(function(req, res){
+    let title = req.params.articleTitle;
+    Article.deleteOne(
+        {title: title},
+        function(err){
+            if(!err){
+                res.send("Deleted partucular article Successfully !")
+            }else{
+                res.send(err)
+            }
+        }
+    )
 });
 
 /*
